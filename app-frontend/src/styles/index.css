@@ -1,0 +1,24 @@
+@import "./tokens.css";
+@import "./components.css";
+@import "./utilities.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+  }
+}
+
+.box {
+  width: 300px;
+  padding: 16px;
+  border: 2px solid #333;
+  margin: 12px;
+  border-radius: 12px; /* rounded corners */
+}

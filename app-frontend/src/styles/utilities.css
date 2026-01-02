@@ -1,0 +1,20 @@
+@layer utilities {
+  .safe-scroll {
+    scrollbar-width: thin;
+  }
+
+  .safe-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .safe-scroll::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+  }
+
+  .glass-border {
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(12px);
+  }
+}

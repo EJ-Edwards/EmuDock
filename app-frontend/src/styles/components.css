@@ -1,0 +1,15 @@
+@layer components {
+  .panel {
+    @apply bg-[color:var(--color-panel)] border border-[color:var(--color-border)] rounded-[var(--radius-md)] p-[var(--space-md)];
+  }
+
+  .panel-heading {
+    @apply flex items-center justify-between text-sm font-semibold uppercase tracking-wide text-[color:var(--color-text-secondary)] mb-[var(--space-sm)];
+  }
+
+  .ghost-button {
+    @apply inline-flex items-center gap-1 rounded-[var(--radius-sm)] px-3 py-1 text-xs font-medium text-[color:var(--color-text-secondary)] transition-colors duration-150;
+    @apply hover:text-[color:var(--color-text-primary)] hover:bg-white/5;
+  }
+}
+
