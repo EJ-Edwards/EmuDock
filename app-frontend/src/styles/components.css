@@ -1,4 +1,209 @@
 @layer components {
+  .app {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: var(--space-lg);
+    padding: var(--space-lg);
+    min-height: 100vh;
+    background: radial-gradient(circle at top, rgba(74, 222, 128, 0.15), transparent 55%);
+  }
+
+  .app-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    min-height: 100%;
+  }
+
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-lg) var(--space-md);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-panel);
+    border: 1px solid var(--color-border);
+    position: sticky;
+    top: var(--space-lg);
+    height: fit-content;
+  }
+
+  .sidebar-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+
+  .sidebar ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .nav-link {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .nav-link.is-active {
+    color: var(--color-accent-strong);
+  }
+
+  .nav-link:hover {
+    color: var(--color-accent-strong);
+  }
+
+  .library-view {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+
+  .hero {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .welcome-view {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+
+  .terms-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    background: linear-gradient(135deg, rgba(23, 26, 33, 0.9), rgba(15, 17, 21, 0.95));
+    box-shadow: 0 25px 65px rgba(0, 0, 0, 0.45);
+  }
+
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.78rem;
+    color: var(--color-text-secondary);
+  }
+
+  .terms-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: 0;
+    margin: 0;
+  }
+
+  .terms-list li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-sm);
+    align-items: start;
+  }
+
+  .term-index {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-border);
+    font-weight: 600;
+    color: var(--color-accent);
+  }
+
+  .terms-consent {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .terms-consent input {
+    margin-top: 0.15rem;
+    accent-color: var(--color-accent-strong);
+  }
+
+  .primary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.85rem 1.75rem;
+    border-radius: var(--radius-md);
+    background: var(--color-accent);
+    color: #0a0c10;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: transform 120ms ease, box-shadow 120ms ease;
+  }
+
+  .primary-button:hover:enabled {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(74, 222, 128, 0.35);
+  }
+
+  .primary-button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .library-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--space-md);
+  }
+
+  .add-games-view {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .game-card {
+    background-color: var(--color-panel);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  }
+
+  .game-card header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-sm);
+  }
+
+  .game-card span {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .game-note {
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+  }
+
   .panel {
     @apply bg-[color:var(--color-panel)] border border-[color:var(--color-border)] rounded-[var(--radius-md)] p-[var(--space-md)];
   }
@@ -10,6 +215,71 @@
   .ghost-button {
     @apply inline-flex items-center gap-1 rounded-[var(--radius-sm)] px-3 py-1 text-xs font-medium text-[color:var(--color-text-secondary)] transition-colors duration-150;
     @apply hover:text-[color:var(--color-text-primary)] hover:bg-white/5;
+  }
+
+  .settings-panel {
+    margin-top: var(--space-lg);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background-color: rgba(23, 26, 33, 0.75);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .settings-panel form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .input-group label {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+  }
+
+  .input-group input {
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    background: rgba(10, 12, 16, 0.75);
+    color: var(--color-text-primary);
+    padding: 0.65rem 0.75rem;
+  }
+
+  .input-group input:focus {
+    outline: 2px solid rgba(74, 222, 128, 0.35);
+    border-color: var(--color-accent);
+  }
+
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .toggle-row input {
+    accent-color: var(--color-accent-strong);
+  }
+
+  .settings-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .save-hint {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
   }
 }
 
