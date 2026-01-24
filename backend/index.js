@@ -1,7 +1,6 @@
 const path = require('path')
 const { app } = require('electron')
 const { saveToJsonFile, loadFromJsonFile, updateJsonFile } = require('./jsonfile')
-const userAuth = require('./userauth')
 
 /**
  * Get the user data directory for storing JSON files
@@ -49,29 +48,36 @@ async function updateJSON(filename, updates, merge = true) {
   }
 }
 
-// User authentication functions
+// Note: User authentication now handled by Firebase Auth in frontend
+// These functions are deprecated but kept for backwards compatibility
 async function createUser(username, password, additionalData) {
-  return await userAuth.createUser(getUserDataPath(), username, password, additionalData)
+  console.warn('createUser: Use Firebase Auth instead')
+  return { success: false, message: 'Use Firebase Auth' }
 }
 
 async function authenticateUser(username, password) {
-  return await userAuth.authenticateUser(getUserDataPath(), username, password)
+  console.warn('authenticateUser: Use Firebase Auth instead')
+  return { success: false, message: 'Use Firebase Auth' }
 }
 
 async function updateUser(username, updates) {
-  return await userAuth.updateUser(getUserDataPath(), username, updates)
+  console.warn('updateUser: Use Firebase Auth instead')
+  return { success: false, message: 'Use Firebase Auth' }
 }
 
 async function changePassword(username, oldPassword, newPassword) {
-  return await userAuth.changePassword(getUserDataPath(), username, oldPassword, newPassword)
+  console.warn('changePassword: Use Firebase Auth instead')
+  return { success: false, message: 'Use Firebase Auth' }
 }
 
 async function deleteUser(username, password) {
-  return await userAuth.deleteUser(getUserDataPath(), username, password)
+  console.warn('deleteUser: Use Firebase Auth instead')
+  return { success: false, message: 'Use Firebase Auth' }
 }
 
 async function getUser(username) {
-  return await userAuth.getUser(getUserDataPath(), username)
+  console.warn('getUser: Use Firebase Auth instead')
+  return { success: false, message: 'Use Firebase Auth' }
 }
 
 module.exports = {

@@ -6,6 +6,8 @@ import LibraryView from "./page/LibraryView.jsx";
 import AddGames from "./page/AddGames.jsx";
 import Welcome from "./page/Welcome.jsx";
 import "./styles/index.css";
+// Import Firebase to initialize it when app loads
+import "./config/firebase.js";
 
 const TERMS_STORAGE_KEY = "emudock_terms_accepted";
 
@@ -27,6 +29,8 @@ function ProtectedRoute({ children, termsAccepted }) {
 }
 
 
+import HamburgerMenu from "./components/hamburger.jsx";
+
 export default function App() {
   const [isSidebarOpen, setSidebarOpen] = useState(getInitialSidebarState);
   const [termsAccepted, setTermsAccepted] = useState(() => hasAcceptedTerms());
@@ -45,15 +49,25 @@ export default function App() {
     setTermsAccepted(true);
   };
 
+  // Show overlay and always show hamburger on mobile
   return (
     <BrowserRouter>
       <div className="app">
+        {/* Hamburger always visible on mobile */}
+        <div className="hamburger-fixed">
+          <HamburgerMenu isOpen={isSidebarOpen} onToggle={toggleSidebar} />
+        </div>
+        {/* Sidebar */}
         <Sidebar
           isOpen={isSidebarOpen}
           onToggle={toggleSidebar}
           onNavigate={handleSidebarNavigate}
           hideWelcomeLink={termsAccepted}
         />
+        {/* Overlay for mobile when sidebar is open */}
+        {isSidebarOpen && typeof window !== "undefined" && window.innerWidth < 768 && (
+          <div className="sidebar-overlay" onClick={toggleSidebar} />
+        )}
         <div className="app-content">
           <Routes>
             <Route path="/" element={<Navigate to="/welcome" replace />} />

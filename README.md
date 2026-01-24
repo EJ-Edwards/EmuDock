@@ -1,14 +1,13 @@
 # EmuDock
 
-Skeleton workspace for an Electron + React + Python desktop launcher. Files exist as placeholders only — fill in the logic when ready.
+Skeleton workspace for an Electron + React desktop launcher. Files exist as placeholders only — fill in the logic when ready.
 
 ## Structure
 
 - [package.json](package.json): Root scripts for Electron + frontend dev loops.
 - [src](src): Electron main & preload entry points.
 - [shared](shared): IPC conventions shared between processes.
-- [backend/src](backend/src): Node helpers (bridge glue to the Python launcher).
-- [backend/python](backend/python): Python package for emulator/database logic.
+- [backend](backend): Node.js backend modules for data management, authentication, and game launching.
 - [app-frontend](app-frontend): React app (Vite) with Sidebar/Library/Settings placeholders.
 
 ## Next steps

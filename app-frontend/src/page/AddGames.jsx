@@ -40,10 +40,68 @@ export default function AddGames() {
 		}
 	};
 
-	const handleSubmit = (event) => {
+	const handleSubmit = async (event) => {
 		event.preventDefault();
-		// TODO: Replace alert with IPC call to backend importer.
-		alert("Import routine pending backend wiring. Files are staged in component state.");
+		
+		if (!pickedFiles.length) {
+			return;
+		}
+
+		setNotes("Importing games...");
+
+		try {
+			// Load existing games
+			const existingGames = await window.electronAPI.loadGameData();
+			const gamesList = Array.isArray(existingGames) ? existingGames : [];
+
+			// Get file input element to access file paths
+			const fileInput = pickedFolder ? directoryInputRef.current : fileInputRef.current;
+			const files = fileInput?.files || [];
+
+			// Create game entries from selected files
+			const newGames = Array.from(files)
+				.filter((file) => {
+					const ext = file.name.toLowerCase().split(".").pop();
+					return ["gb", "gba", "gbc", "zip"].includes(ext);
+				})
+				.map((file) => {
+					const title = file.name.replace(/\.[^/.]+$/, ""); // Remove extension
+					const ext = file.name.toLowerCase().split(".").pop();
+					const platform = ext === "gba" ? "GBA" : ext === "gb" ? "GB" : ext === "gbc" ? "GBC" : "Unknown";
+					
+					return {
+						id: Date.now() + Math.random(), // Simple unique ID
+						title,
+						platform,
+						filePath: file.path || file.webkitRelativePath || file.name,
+						note: "",
+						addedDate: new Date().toISOString(),
+					};
+				});
+
+			if (newGames.length === 0) {
+				setNotes("No valid ROM files found in selection.");
+				return;
+			}
+
+			// Merge and save
+			const updatedGames = [...gamesList, ...newGames];
+			const success = await window.electronAPI.saveGameData(updatedGames);
+
+			if (success) {
+				setNotes(`Successfully imported ${newGames.length} game(s)! Check your library.`);
+				setPickedFiles([]);
+				setPickedFolder(null);
+				// Reset file inputs
+				if (fileInputRef.current) fileInputRef.current.value = "";
+				if (directoryInputRef.current) directoryInputRef.current.value = "";
+			} else {
+				setNotes("Failed to save games to library. Please try again.");
+			}
+		} catch (err) {
+			console.error("Import error:", err);
+			setNotes(`Import failed: ${err.message}`);
+		}
 	};
 
 	return (

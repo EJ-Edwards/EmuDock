@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron/main')
 const path = require('node:path')
 const IPC = require('../shared/ipc')
-const backend = require('../backend/src/index')
+const backend = require('../backend/index')
 
 const isDev = Boolean(process.env.VITE_DEV_SERVER_URL)
 const rendererDist = path.join(__dirname, '..', 'app-frontend', 'dist')
@@ -19,6 +19,7 @@ async function createWindow () {
 
   if (isDev) {
     await mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL)
+    mainWindow.webContents.openDevTools() // Open dev tools to see errors
   } else {
     await mainWindow.loadFile(path.join(rendererDist, 'index.html'))
   }

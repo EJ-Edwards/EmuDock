@@ -1,4 +1,12 @@
 import { useState, useEffect, createContext, useContext } from 'react'
+import { auth } from '../config/firebase'
+import { 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  signOut, 
+  onAuthStateChanged,
+  updateProfile as firebaseUpdateProfile
+} from 'firebase/auth'
 
 // Create Auth Context
 const AuthContext = createContext(null)
@@ -12,35 +20,41 @@ export function AuthProvider({ children }) {
   const [error, setError] = useState(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
-  // Check for stored session on mount
+  // Listen to Firebase auth state changes
   useEffect(() => {
-    const storedUser = localStorage.getItem('currentUser')
-    if (storedUser) {
-      try {
-        const userData = JSON.parse(storedUser)
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        const userData = {
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          displayName: firebaseUser.displayName,
+          photoURL: firebaseUser.photoURL
+        }
         setUser(userData)
         setIsAuthenticated(true)
-      } catch (err) {
-        localStorage.removeItem('currentUser')
+        setLoading(false)
+      } else {
+        setUser(null)
+        setIsAuthenticated(false)
+        setLoading(false)
       }
-    }
+    })
+
+    return () => unsubscribe()
   }, [])
 
-  const register = async (username, password, additionalData = {}) => {
+  const register = async (email, password, displayName = '') => {
     setLoading(true)
     setError(null)
     try {
-      const result = await window.electronAPI.createUser(username, password, additionalData)
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password)
       
-      if (result.success) {
-        setUser(result.user)
-        setIsAuthenticated(true)
-        localStorage.setItem('currentUser', JSON.stringify(result.user))
-      } else {
-        setError(result.message)
+      // Update display name if provided
+      if (displayName) {
+        await firebaseUpdateProfile(userCredential.user, { displayName })
       }
       
-      return result
+      return { success: true, user: userCredential.user }
     } catch (err) {
       const errorMsg = err.message || 'Registration failed'
       setError(errorMsg)
@@ -50,21 +64,12 @@ export function AuthProvider({ children }) {
     }
   }
 
-  const login = async (username, password) => {
+  const login = async (email, password) => {
     setLoading(true)
     setError(null)
     try {
-      const result = await window.electronAPI.authenticateUser(username, password)
-      
-      if (result.success) {
-        setUser(result.user)
-        setIsAuthenticated(true)
-        localStorage.setItem('currentUser', JSON.stringify(result.user))
-      } else {
-        setError(result.message)
-      }
-      
-      return result
+      const userCredential = await signInWithEmailAndPassword(auth, email, password)
+      return { success: true, user: userCredential.user }
     } catch (err) {
       const errorMsg = err.message || 'Login failed'
       setError(errorMsg)
@@ -74,28 +79,25 @@ export function AuthProvider({ children }) {
     }
   }
 
-  const logout = () => {
-    setUser(null)
-    setIsAuthenticated(false)
-    localStorage.removeItem('currentUser')
+  const logout = async () => {
+    try {
+      await signOut(auth)
+      setUser(null)
+      setIsAuthenticated(false)
+    } catch (err) {
+      console.error('Logout error:', err)
+    }
   }
 
   const updateProfile = async (updates) => {
-    if (!user) return { success: false, message: 'No user logged in' }
+    if (!auth.currentUser) return { success: false, message: 'No user logged in' }
     
     setLoading(true)
     setError(null)
     try {
-      const result = await window.electronAPI.updateUserProfile(user.username, updates)
-      
-      if (result.success) {
-        setUser(result.user)
-        localStorage.setItem('currentUser', JSON.stringify(result.user))
-      } else {
-        setError(result.message)
-      }
-      
-      return result
+      await firebaseUpdateProfile(auth.currentUser, updates)
+      setUser({ ...user, ...updates })
+      return { success: true }
     } catch (err) {
       const errorMsg = err.message || 'Update failed'
       setError(errorMsg)
@@ -106,46 +108,20 @@ export function AuthProvider({ children }) {
   }
 
   const changePassword = async (oldPassword, newPassword) => {
-    if (!user) return { success: false, message: 'No user logged in' }
-    
-    setLoading(true)
-    setError(null)
-    try {
-      const result = await window.electronAPI.changePassword(
-        user.username,
-        oldPassword,
-        newPassword
-      )
-      
-      if (!result.success) {
-        setError(result.message)
-      }
-      
-      return result
-    } catch (err) {
-      const errorMsg = err.message || 'Password change failed'
-      setError(errorMsg)
-      return { success: false, message: errorMsg }
-    } finally {
-      setLoading(false)
-    }
+    // Note: Firebase requires re-authentication before password change
+    // You'll need to implement reauthenticateWithCredential
+    return { success: false, message: 'Password change requires re-authentication' }
   }
 
-  const deleteAccount = async (password) => {
-    if (!user) return { success: false, message: 'No user logged in' }
+  const deleteAccount = async () => {
+    if (!auth.currentUser) return { success: false, message: 'No user logged in' }
     
     setLoading(true)
     setError(null)
     try {
-      const result = await window.electronAPI.deleteUserAccount(user.username, password)
-      
-      if (result.success) {
-        logout()
-      } else {
-        setError(result.message)
-      }
-      
-      return result
+      await auth.currentUser.delete()
+      logout()
+      return { success: true }
     } catch (err) {
       const errorMsg = err.message || 'Account deletion failed'
       setError(errorMsg)
