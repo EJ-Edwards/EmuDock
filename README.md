@@ -16,3 +16,4 @@ Skeleton workspace for an Electron + React desktop launcher. Files exist as plac
 2. Implement the TODOs across JS + Python files.
 3. Start the dev environment with `npm run dev` (renders Vite + Electron once code exists).
 
+# MVP IN PROGRESS
