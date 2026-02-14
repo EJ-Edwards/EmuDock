@@ -17,3 +17,4 @@ Skeleton workspace for an Electron + React desktop launcher. Files exist as plac
 3. Start the dev environment with `npm run dev` (renders Vite + Electron once code exists).
 
 # MVP IN PROGRESS
+not everything is finished yet
